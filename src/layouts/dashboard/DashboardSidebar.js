@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { 
   Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText 
 } from '@mui/material';
-import { PATH_TO_DASHBOARD } from '../../../routes/paths';
+import { PATH_TO_DASHBOARD } from '../../routes/paths';
 
 const DashboardSidebarRoot = styled('div')(({ theme }) => ({
   width: 280,

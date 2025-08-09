@@ -1,13 +1,12 @@
 import { useRoutes, Navigate } from 'react-router-dom';
-import { PATH_TO_DASHBOARD } from '@routes/paths';
-import AuthGuard from '@components/authGuard/AuthGuard';
-import DashboardLayout from '@layouts/dashboard/DashboardLayout';
+import { PATH_TO_DASHBOARD } from '../routes/paths';
+import AuthGuard from '../components/authGuard/AuthGuard';
+import DashboardLayout from '../layouts/dashboard/DashboardLayout';
 
 // Pages
-import LoginPage from '@pages/auth/LoginPage';
-import RegisterPage from '@pages/auth/RegisterPage';
-import DashboardAppPage from '@pages/dashboard/AppPage';
-import DashboardUserPage from '@pages/dashboard/UserPage';
+import LoginPage from '../views/auth/LoginPage';
+import RegisterPage from '../views/auth/RegisterPage';
+import HomePage from '../views/dashboard/HomePage'; // ✅ import new page
 
 export default function Router() {
   return useRoutes([
@@ -17,8 +16,11 @@ export default function Router() {
       children: [
         { path: 'login', element: <LoginPage /> },
         { path: 'register', element: <RegisterPage /> },
-        { index: true, element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace /> }
-      ]
+        {
+          index: true,
+          element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
+        },
+      ],
     },
 
     // Dashboard routes
@@ -30,14 +32,22 @@ export default function Router() {
         </AuthGuard>
       ),
       children: [
-        { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element: <DashboardUserPage /> },
-        { index: true, element: <Navigate to={PATH_TO_DASHBOARD.dashboard.app} replace /> }
-      ]
+        { path: 'app', element: <HomePage /> }, // ✅ home page route
+        {
+          index: true,
+          element: <Navigate to={PATH_TO_DASHBOARD.dashboard.app} replace />,
+        },
+      ],
     },
 
     // Redirects
-    { path: '/', element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace /> },
-    { path: '*', element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace /> }
+    {
+      path: '/',
+      element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
+    },
+    {
+      path: '*',
+      element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
+    },
   ]);
 }

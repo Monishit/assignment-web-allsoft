@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { PATH_TO_DASHBOARD } from '../../routes/paths';
 import { Box, Button, Container, TextField, Typography } from '@mui/material';
 
