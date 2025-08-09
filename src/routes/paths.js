@@ -7,5 +7,6 @@ export const PATH_TO_DASHBOARD = {
   dashboard: {
     root: '/dashboard',
     app: '/dashboard/app',
+    user: '/dashboard/user'
   },
 };

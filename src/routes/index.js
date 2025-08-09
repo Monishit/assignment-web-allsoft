@@ -37,6 +37,7 @@ export default function Router() {
           index: true,
           element: <Navigate to={PATH_TO_DASHBOARD.dashboard.app} replace />,
         },
+        { path: 'user', element: <HomePage /> },
       ],
     },
 

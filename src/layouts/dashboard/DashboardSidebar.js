@@ -4,8 +4,10 @@ import { styled } from '@mui/material/styles';
 import { 
   Box, Drawer, List, ListItemButton, ListItemIcon, ListItemText 
 } from '@mui/material';
+import { Icon } from '@iconify/react';
 import { PATH_TO_DASHBOARD } from '../../routes/paths';
 
+// Styled root container for sidebar
 const DashboardSidebarRoot = styled('div')(({ theme }) => ({
   width: 280,
   position: 'fixed',
@@ -15,15 +17,16 @@ const DashboardSidebarRoot = styled('div')(({ theme }) => ({
   zIndex: 1200
 }));
 
+// Navigation items with Iconify icons
 const navItems = [
   {
     path: PATH_TO_DASHBOARD.dashboard.app,
-    icon: <DashboardIcon />,
+    icon: <Icon icon="mdi:view-dashboard-outline" width={24} height={24} />,
     title: 'Dashboard'
   },
   {
     path: PATH_TO_DASHBOARD.dashboard.user,
-    icon: <PeopleIcon />,
+    icon: <Icon icon="mdi:account-group-outline" width={24} height={24} />,
     title: 'Users'
   }
 ];
@@ -57,7 +60,7 @@ export default function DashboardSidebar() {
               to={item.path}
               selected={location.pathname === item.path}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.title} />
             </ListItemButton>
           ))}

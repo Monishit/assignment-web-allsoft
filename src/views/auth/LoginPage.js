@@ -12,41 +12,39 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Authentication logic here
-    login();
+    // login();
+
+    // ✅ Navigate to dashboard app route
     navigate(PATH_TO_DASHBOARD.dashboard.app);
   };
 
   return (
-    <Container maxWidth='xs'>
+    <Container maxWidth="xs">
       <Box sx={{ mt: 8, textAlign: 'center' }}>
-        <Typography variant='h4'>Sign in to your account</Typography>
-        <Box component='form' onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Typography variant="h4">Sign in to your account</Typography>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField
-            margin='normal'
+            margin="normal"
             required
             fullWidth
-            label='Email Address'
-            autoComplete='email'
+            label="Email Address"
+            autoComplete="email"
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
-            margin='normal'
+            margin="normal"
             required
             fullWidth
-            label='Password'
-            type='password'
+            label="Password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            type='submit'
-            fullWidth
-            variant='contained'
-            sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>
         </Box>
