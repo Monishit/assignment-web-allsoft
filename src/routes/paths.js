@@ -1,8 +1,8 @@
 export const PATH_TO_DASHBOARD = {
   auth: {
-    root: '/auth',
-    login: '/auth/login',
-    register: '/auth/register',
+    root: '/',
+    login: '/login',
+    register: '/register',
   },
   dashboard: {
     root: '/dashboard',
