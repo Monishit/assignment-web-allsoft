@@ -1,0 +1,25 @@
+module.exports = (api) => {
+  api.cache(true);
+  
+  const presets = ["react-app"];
+  const plugins = [
+    [
+      "module-resolver",
+      {
+        root: ["./src"],
+        alias: {
+          "@": "./src",
+          "@components": "./src/components",
+          "@layouts": "./src/layouts",
+          "@pages": "./src/pages",
+          "@routes": "./src/routes",
+          "@contexts": "./src/contexts",
+          "@theme": "./src/theme",
+          "@utils": "./src/utils"
+        }
+      }
+    ]
+  ];
+
+  return { presets, plugins };
+};
