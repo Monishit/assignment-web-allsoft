@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slices/authSlice";
+import documentReducer from './slices/documentSlice'
 
 // Root persist config
 export const rootPersistConfig = {
@@ -27,6 +28,7 @@ const goalClassPersistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  document: documentReducer
 });
 
 export default rootReducer;

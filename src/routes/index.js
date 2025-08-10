@@ -1,12 +1,14 @@
-import { useRoutes, Navigate } from 'react-router-dom';
-import { PATH_TO_DASHBOARD } from '../routes/paths';
-import AuthGuard from '../components/authGuard/AuthGuard';
-import DashboardLayout from '../layouts/dashboard/DashboardLayout';
+import { useRoutes, Navigate } from "react-router-dom";
+import { PATH_TO_DASHBOARD } from "../routes/paths";
+import AuthGuard from "../components/authGuard/AuthGuard";
+import DashboardLayout from "../layouts/dashboard/DashboardLayout";
 
 // Pages
-import LoginPage from '../views/auth/LoginPage';
-import RegisterPage from '../views/auth/RegisterPage';
-import HomePage from '../views/dashboard/HomePage'; // ✅ import new page
+import LoginPage from "../views/auth/LoginPage";
+import RegisterPage from "../views/auth/RegisterPage";
+import HomePage from "../views/dashboard/HomePage";
+import UploadPage from "../views/dashboard/UploadPage";
+import SearchPage from "../views/dashboard/SearchPage";
 
 export default function Router() {
   return useRoutes([
@@ -14,8 +16,8 @@ export default function Router() {
     {
       path: PATH_TO_DASHBOARD.auth.root,
       children: [
-        { path: 'login', element: <LoginPage /> },
-        { path: 'register', element: <RegisterPage /> },
+        { path: "login", element: <LoginPage /> },
+        { path: "register", element: <RegisterPage /> },
         {
           index: true,
           element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
@@ -32,22 +34,23 @@ export default function Router() {
         </AuthGuard>
       ),
       children: [
-        { path: 'app', element: <HomePage /> }, // ✅ home page route
+        { path: "app", element: <HomePage /> },
         {
           index: true,
           element: <Navigate to={PATH_TO_DASHBOARD.dashboard.app} replace />,
         },
-        { path: 'user', element: <HomePage /> },
+        { path: "upload", element: <UploadPage /> },
+        { path: "search", element: <SearchPage /> },
       ],
     },
 
     // Redirects
     {
-      path: '/',
+      path: "/",
       element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
     },
     {
-      path: '*',
+      path: "*",
       element: <Navigate to={PATH_TO_DASHBOARD.auth.login} replace />,
     },
   ]);

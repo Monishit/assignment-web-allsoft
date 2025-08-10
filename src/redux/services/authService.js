@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AxiosClient from '@/utils/axios';
+import AxiosClient from '../../utils/axios';
 
 export const generateOtp = createAsyncThunk(
   'auth/generateOtpAsync',
   async (data, toolkit) =>
     AxiosClient({
       toolkit,
-      url: 'documentManagement//generateOTP',
+      url: '/generateOTP',
       method: 'post',
       data,
     })
@@ -17,7 +17,7 @@ export const validateOtp = createAsyncThunk(
   async (data, toolkit) =>
     AxiosClient({
       toolkit,
-      url: 'documentManagement//validateOTP',
+      url: '/validateOTP',
       method: 'post',
       data,
     })

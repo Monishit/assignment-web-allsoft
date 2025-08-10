@@ -30,7 +30,7 @@ const AuthSlice = createSlice({
     });
     builder.addMatcher(isAnyOf(validateOtp.fulfilled), (state, { payload }) => {
       state.isLoading = false;
-      state.token = payload.authToken;
+      state.token = payload.token;
       state.userData = payload.data;
     });
     builder.addMatcher(isAnyOf(validateOtp.rejected), (state) => {

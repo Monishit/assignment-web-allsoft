@@ -5,6 +5,8 @@ const isErrorResponse = (error) => {
   return error && typeof error.message === "string";
 };
 
+const REACT_PUBLIC_BASE_URL = "https://apis.allsoft.co/api/documentManagement/";
+
 const AxiosClient = async (args) => {
   const { toolkit, headers = {}, data, ...rest } = args;
 
@@ -14,7 +16,7 @@ const AxiosClient = async (args) => {
   const tempToken = localStorage?.getItem("tempToken") || "";
 
   return axios({
-    baseURL: process.env.REACT_PUBLIC_API_BASE,
+    baseURL: REACT_PUBLIC_BASE_URL,
     ...rest,
     data,
     headers: {
@@ -22,7 +24,7 @@ const AxiosClient = async (args) => {
       ...((token || tempToken) &&
       (token || tempToken) !== "null" &&
       (token || tempToken) !== "undefined"
-        ? { Authorization: token || tempToken }
+        ? { token: token || tempToken }
         : {}),
       ...headers,
     },
@@ -65,12 +67,12 @@ export const AxiosClientMultiForm = async (args) => {
   const token = localStorage?.getItem("token") || "";
 
   return axios({
-    baseURL: process.env.REACT_PUBLIC_API_BASE,
+    baseURL: REACT_PUBLIC_BASE_URL,
     ...rest,
     headers: {
       "Content-Type": "multipart/form-data",
       ...(token && token !== "null" && token !== "undefined"
-        ? { Authorization: token }
+        ? { token: token }
         : {}),
       ...headers,
     },

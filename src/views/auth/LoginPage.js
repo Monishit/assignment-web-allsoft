@@ -1,37 +1,50 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { PATH_TO_DASHBOARD } from '../../routes/paths';
-import { Box, Grid, TextField, Button, Typography, Paper } from '@mui/material';
-import { motion } from 'framer-motion';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import registerImage from '../../assets/images/DocumentBG.png';
-import RHFTextFieldWithIcon from '../../components/hookForm/RHFTextFieldWithIcon';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { PATH_TO_DASHBOARD } from "../../routes/paths";
+import {
+  Box,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { useForm, Controller, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import registerImage from "../../assets/images/DocumentBG.png";
+import RHFTextFieldWithIcon from "../../components/hookForm/RHFTextFieldWithIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { generateOtp, validateOtp } from "../../redux/services/authService";
 
 export default function LoginPage() {
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state?.auth);
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [selectedPhone, setPhone] = useState(0);
 
   // Yup schemas
   const phoneSchema = Yup.object().shape({
     phone: Yup.string()
-      .required('Phone number is required')
-      .matches(/^\d{10}$/, 'Must be exactly 10 digits'),
+      .required("Phone number is required")
+      .matches(/^\d{10}$/, "Must be exactly 10 digits"),
   });
 
   const otpSchema = Yup.object().shape({
     otp: Yup.array()
-      .of(Yup.string().matches(/^\d$/, 'Must be a digit').required('Required'))
-      .length(4, 'OTP must be 4 digits'),
+      .of(Yup.string().matches(/^\d$/, "Must be a digit").required("Required"))
+      .length(6, "OTP must be 6 digits"), // ✅ fixed for 6 digits
   });
 
   // useForm with resolver, defaultValues
   const methods = useForm({
     resolver: yupResolver(step === 1 ? phoneSchema : otpSchema),
     defaultValues: {
-      phone: '',
-      otp: ['', '', '', ''],
+      phone: "",
+      otp: ["", "", "", "", "", ""], // ✅ 6 empty values
     },
   });
 
@@ -44,19 +57,38 @@ export default function LoginPage() {
 
   // Submit handlers
   const onSubmitPhone = (data) => {
-    setStep(2);
-    console.log('Phone submitted:', data.phone);
+    dispatch(generateOtp({ mobile_number: Number(data?.phone) })).then(
+      (response) => {
+        if (response?.payload?.status === true) {
+          setStep(2);
+          setPhone(Number(data?.phone));
+        }
+      }
+    );
   };
 
   const onSubmitOtp = (data) => {
-    console.log('OTP submitted:', data.otp.join(''));
-    navigate(PATH_TO_DASHBOARD.dashboard.app);
+    const otpValue = data.otp.join("");
+    console.log("OTP submitted:", otpValue);
+    if (otpValue.length === 6) {
+      const payload = {
+        mobile_number: selectedPhone,
+        otp: otpValue,
+      };
+      dispatch(validateOtp(payload)).then((response) => {
+        if (response?.payload?.status === true) {
+          localStorage.setItem('token', response?.payload?.data?.token)
+          localStorage.setItem("userData", response?.payload?.data);
+          navigate(PATH_TO_DASHBOARD.dashboard.app);
+        }
+      });
+    }
   };
 
   // OTP input change handler
   const handleOtpChange = (value, index) => {
     setValue(`otp[${index}]`, value.slice(-1)); // last digit only
-    if (value && index < 3) {
+    if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       if (nextInput) nextInput.focus();
     }
@@ -66,7 +98,7 @@ export default function LoginPage() {
     <Grid
       container
       gap={20}
-      sx={{ minHeight: '100vh', backgroundColor: '#f4f6f8' }}
+      sx={{ minHeight: "100vh", backgroundColor: "#f4f6f8" }}
     >
       {/* Left side with image */}
       <Grid
@@ -74,30 +106,30 @@ export default function LoginPage() {
         xs={12}
         md={9}
         sx={{
-          position: 'relative',
+          position: "relative",
           backgroundImage: `url(${registerImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
           p: 5,
-          color: '#fff',
-          overflow: 'hidden',
+          color: "#fff",
+          overflow: "hidden",
         }}
       >
         <Box
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
             zIndex: 1,
           }}
         />
-        <Box sx={{ position: 'relative', zIndex: 2 }}>
+        <Box sx={{ position: "relative", zIndex: 2 }}>
           <Typography variant="h3" fontWeight="bold" gutterBottom>
             Welcome Back
           </Typography>
@@ -126,10 +158,10 @@ export default function LoginPage() {
             sx={{
               p: 4,
               borderRadius: 4,
-              boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
-              width: '100%',
+              boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+              width: "100%",
               maxWidth: 400,
-              backgroundColor: '#fff',
+              backgroundColor: "#fff",
             }}
           >
             <Typography variant="h5" fontWeight="bold" mb={3} align="center">
@@ -158,12 +190,10 @@ export default function LoginPage() {
                       mt: 3,
                       py: 1.2,
                       borderRadius: 2,
-                      background:
-                        'linear-gradient(45deg, #1976d2, #42a5f5)',
-                      boxShadow: '0 4px 12px rgba(25,118,210,0.4)',
-                      '&:hover': {
-                        background:
-                          'linear-gradient(45deg, #1565c0, #1e88e5)',
+                      background: "linear-gradient(45deg, #1976d2, #42a5f5)",
+                      boxShadow: "0 4px 12px rgba(25,118,210,0.4)",
+                      "&:hover": {
+                        background: "linear-gradient(45deg, #1565c0, #1e88e5)",
                       },
                     }}
                     type="submit"
@@ -176,17 +206,17 @@ export default function LoginPage() {
               {step === 2 && (
                 <form onSubmit={handleSubmit(onSubmitOtp)}>
                   <Typography align="center" mb={2}>
-                    Enter the OTP sent to {getValues('phone')}
+                    Enter the OTP sent to {getValues("phone")}
                   </Typography>
                   <Box
                     sx={{
-                      display: 'flex',
+                      display: "flex",
                       gap: 2,
-                      justifyContent: 'center',
+                      justifyContent: "center",
                       mb: 3,
                     }}
                   >
-                    {[0, 1, 2, 3].map((idx) => (
+                    {[0, 1, 2, 3, 4, 5].map((idx) => (
                       <Controller
                         key={idx}
                         name={`otp[${idx}]`}
@@ -201,7 +231,10 @@ export default function LoginPage() {
                             value={field.value}
                             inputProps={{
                               maxLength: 1,
-                              style: { textAlign: 'center', fontSize: '1.5rem' },
+                              style: {
+                                textAlign: "center",
+                                fontSize: "1.5rem",
+                              },
                             }}
                             error={!!errors.otp?.[idx]}
                             helperText={errors.otp?.[idx]?.message}
@@ -214,34 +247,33 @@ export default function LoginPage() {
                   <Button
                     fullWidth
                     variant="contained"
+                    disabled={isLoading}
                     sx={{
                       mt: 1,
                       py: 1.2,
                       borderRadius: 2,
-                      background:
-                        'linear-gradient(45deg, #1976d2, #42a5f5)',
-                      boxShadow: '0 4px 12px rgba(25,118,210,0.4)',
-                      '&:hover': {
-                        background:
-                          'linear-gradient(45deg, #1565c0, #1e88e5)',
+                      background: "linear-gradient(45deg, #1976d2, #42a5f5)",
+                      boxShadow: "0 4px 12px rgba(25,118,210,0.4)",
+                      "&:hover": {
+                        background: "linear-gradient(45deg, #1565c0, #1e88e5)",
                       },
                     }}
                     type="submit"
                   >
-                    Verify OTP
+                    {isLoading ? <CircularProgress /> : "Verify OTP"}
                   </Button>
                 </form>
               )}
             </FormProvider>
 
             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-              Don’t have an account?{' '}
+              Don’t have an account?{" "}
               <Link
                 to="/register"
                 style={{
-                  textDecoration: 'none',
-                  color: '#1976d2',
-                  fontWeight: 'bold',
+                  textDecoration: "none",
+                  color: "#1976d2",
+                  fontWeight: "bold",
                 }}
               >
                 Register
